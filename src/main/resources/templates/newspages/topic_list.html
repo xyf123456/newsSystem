@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>主题列表--管理后台</title>
+    <link th:href="@{/static/css/admin.css}" rel="stylesheet" type="text/css"/>
+    <script th:src="@{/static/js/jquery.min.js}"></script>
+    <script type="text/javascript">
+        //在加载BOM对象时候调用的函数
+        $(document).ready(function () {
+            findAllTopics();
+        });
+
+        function findAllTopics() {
+            //ajax请求，发送请求的URL字符串
+            $.ajax({
+//                发送请求的URL字符串
+                url: "/topic/getTopics",
+                dataType: "json", //预期服务器返回的数据类型
+                type: "get",//客户端的请求方式
+                contentType: "application/json",//发送至服务器时内容编码格式
+//                data:JSON.stringify({id: 1, name:"springboot"}),
+                async: true,//采取异步通信的方式
+//                请求成功的回调函数：
+                success: function (data) {
+                    //将响应到的数据打印到控制台上
+                    console.log(data);
+                    var str = "";
+//                    将相应的数据渲染到html内容当中
+                    $.each(data, function () {
+                        str += "<li>" + this.tname + "<span>&#160;&#160;&#160;&#160;<a href='/topic/modifyTopic/" + this.tid + "'>修改</a><a href='/" + this.tid + "'>删除</a></span></li>";
+                    });
+                    $("#classlist").html(str);
+                },
+                error: function () {
+                    alert("数据发送失败");
+                }
+            })
+        }
+    </script>
+</head>
+
+<body>
+<div id="header">
+    <div id="welcome">
+        欢迎使用新闻管理系统！
+    </div>
+    <div id="nav">
+        <div id="logo"><img th:src="@{/static/images/logo.jpg}" alt="新闻中国"/></div>
+        <div id="a_b01"><img th:src="@{/static/images/a_b01.gif}" alt=""/></div>
+    </div>
+</div>
+<div id="admin_bar">
+    <div id="status">管理员：<span th:text="${session.name}"></span> 登录 &#160;&#160;&#160;&#160; <a th:href="@{/login/logout}">退出登录</a>
+    </div>
+    <div id="channel"></div>
+</div>
+<div id="main">
+    <div id="opt_area">
+        <ul class="classlist" id="classlist">
+            <!--<c:forEach items="${requestScope.list}" var="topic">
+              <li> &#160;&#160;&#160;&#160; ${topic.tname} &#160;&#160;&#160;&#160; <a href='../newspages/topic_modify.jsp?tid=${topic.tid}&tname=${topic.tname}'>修改</a> &#160;&#160;&#160;&#160; <a href='../util/topics?opr=del&tid=${topic.tid}'>删除</a> </li>
+            </c:forEach>-->
+        </ul>
+    </div>
+</div>
+<div id="footer">
+    <div id="site_link"><a href="#">关于我们</a><span>|</span> <a href="#">Aboue Us</a><span>|</span> <a
+            href="#">联系我们</a><span>|</span> <a href="#">广告服务</a><span>|</span> <a href="#">供稿服务</a><span>|</span> <a
+            href="#">法律声明</a><span>|</span> <a href="#">招聘信息</a><span>|</span> <a href="#">网站地图</a><span>|</span> <a
+            href="#">留言反馈</a></div>
+    <div>
+        <p class="">24小时客户服务热线：010-68988888 &#160;&#160;&#160;&#160; <a href="#">常见问题解答</a> &#160;&#160;&#160;&#160;
+            新闻热线：010-627488888<br/>
+            文明办网文明上网举报电话：010-627488888 &#160;&#160;&#160;&#160; 举报邮箱：<a href="#">jubao@jb-aptech.com.cn</a></p>
+        <p class="copyright">Copyright &copy; 1999-2009 News China gov, All Right Reserver<br/>
+            新闻中国 版权所有</p>
+    </div>
+</div>
+</body>
+</html>

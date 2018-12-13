@@ -1,0 +1,337 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.tt.news.dao.NewsMapper">
+    <resultMap id="BaseResultMap" type="com.tt.news.pojo.News">
+        <id column="nid" property="nid" jdbcType="INTEGER"/>
+        <result column="ntid" property="ntid" jdbcType="INTEGER"/>
+        <result column="ntitle" property="ntitle" jdbcType="VARCHAR"/>
+        <result column="nauthor" property="nauthor" jdbcType="VARCHAR"/>
+        <result column="ncreateDate" property="ncreatedate" jdbcType="TIMESTAMP"/>
+        <result column="npicPath" property="npicpath" jdbcType="VARCHAR"/>
+        <result column="nmodifyDate" property="nmodifydate" jdbcType="TIMESTAMP"/>
+        <result column="nsummary" property="nsummary" jdbcType="VARCHAR"/>
+    </resultMap>
+    <resultMap id="ResultMapWithBLOBs" type="com.tt.news.pojo.News" extends="BaseResultMap">
+        <result column="ncontent" property="ncontent" jdbcType="LONGVARCHAR"/>
+    </resultMap>
+    <sql id="Example_Where_Clause">
+        <where>
+            <foreach collection="oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" suffix=")" prefixOverrides="and">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach collection="criterion.value" item="listItem" open="(" close=")"
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Update_By_Example_Where_Clause">
+        <where>
+            <foreach collection="example.oredCriteria" item="criteria" separator="or">
+                <if test="criteria.valid">
+                    <trim prefix="(" suffix=")" prefixOverrides="and">
+                        <foreach collection="criteria.criteria" item="criterion">
+                            <choose>
+                                <when test="criterion.noValue">
+                                    and ${criterion.condition}
+                                </when>
+                                <when test="criterion.singleValue">
+                                    and ${criterion.condition} #{criterion.value}
+                                </when>
+                                <when test="criterion.betweenValue">
+                                    and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                                </when>
+                                <when test="criterion.listValue">
+                                    and ${criterion.condition}
+                                    <foreach collection="criterion.value" item="listItem" open="(" close=")"
+                                             separator=",">
+                                        #{listItem}
+                                    </foreach>
+                                </when>
+                            </choose>
+                        </foreach>
+                    </trim>
+                </if>
+            </foreach>
+        </where>
+    </sql>
+    <sql id="Base_Column_List">
+    nid, ntid, ntitle, nauthor, ncreateDate, npicPath, nmodifyDate, nsummary
+  </sql>
+    <sql id="Blob_Column_List">
+    ncontent
+  </sql>
+    <select id="selectByExampleWithBLOBs" resultMap="ResultMapWithBLOBs" parameterType="com.tt.news.pojo.NewsExample">
+        select
+        <if test="distinct">
+            distinct
+        </if>
+        'true' as QUERYID,
+        <include refid="Base_Column_List"/>
+        ,
+        <include refid="Blob_Column_List"/>
+        from news
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+        <if test="orderByClause != null">
+            order by ${orderByClause}
+        </if>
+    </select>
+    <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.tt.news.pojo.NewsExample">
+        select
+        <if test="distinct">
+            distinct
+        </if>
+        'true' as QUERYID,
+        <include refid="Base_Column_List"/>
+        from news
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+        <if test="orderByClause != null">
+            order by ${orderByClause}
+        </if>
+    </select>
+
+    <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        ,
+        <include refid="Blob_Column_List"/>
+        from news
+        where nid = #{nid,jdbcType=INTEGER}
+    </select>
+    <!--查询某主题下的新闻信息-->
+    <select id="selectByTopicName" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        ,
+        <include refid="Blob_Column_List"/>
+        from news n INNER JOIN topic t
+        where n.ntid = t.tid and t.tname=#{tName} order by ${orderByClause};
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from news
+    where nid = #{nid,jdbcType=INTEGER}
+  </delete>
+    <delete id="deleteByExample" parameterType="com.tt.news.pojo.NewsExample">
+        delete from news
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </delete>
+    <insert id="insert" parameterType="com.tt.news.pojo.News">
+    insert into news (nid, ntid, ntitle, 
+      nauthor, ncreateDate, npicPath, 
+      nmodifyDate, nsummary, ncontent
+      )
+    values (#{nid,jdbcType=INTEGER}, #{ntid,jdbcType=INTEGER}, #{ntitle,jdbcType=VARCHAR}, 
+      #{nauthor,jdbcType=VARCHAR}, #{ncreatedate,jdbcType=TIMESTAMP}, #{npicpath,jdbcType=VARCHAR}, 
+      #{nmodifydate,jdbcType=TIMESTAMP}, #{nsummary,jdbcType=VARCHAR}, #{ncontent,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+    <insert id="insertSelective" parameterType="com.tt.news.pojo.News">
+        insert into news
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="nid != null">
+                nid,
+            </if>
+            <if test="ntid != null">
+                ntid,
+            </if>
+            <if test="ntitle != null">
+                ntitle,
+            </if>
+            <if test="nauthor != null">
+                nauthor,
+            </if>
+            <if test="ncreatedate != null">
+                ncreateDate,
+            </if>
+            <if test="npicpath != null">
+                npicPath,
+            </if>
+            <if test="nmodifydate != null">
+                nmodifyDate,
+            </if>
+            <if test="nsummary != null">
+                nsummary,
+            </if>
+            <if test="ncontent != null">
+                ncontent,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="nid != null">
+                #{nid,jdbcType=INTEGER},
+            </if>
+            <if test="ntid != null">
+                #{ntid,jdbcType=INTEGER},
+            </if>
+            <if test="ntitle != null">
+                #{ntitle,jdbcType=VARCHAR},
+            </if>
+            <if test="nauthor != null">
+                #{nauthor,jdbcType=VARCHAR},
+            </if>
+            <if test="ncreatedate != null">
+                #{ncreatedate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="npicpath != null">
+                #{npicpath,jdbcType=VARCHAR},
+            </if>
+            <if test="nmodifydate != null">
+                #{nmodifydate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="nsummary != null">
+                #{nsummary,jdbcType=VARCHAR},
+            </if>
+            <if test="ncontent != null">
+                #{ncontent,jdbcType=LONGVARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <select id="countByExample" parameterType="com.tt.news.pojo.NewsExample" resultType="java.lang.Integer">
+        select count(*) from news
+        <if test="_parameter != null">
+            <include refid="Example_Where_Clause"/>
+        </if>
+    </select>
+    <update id="updateByExampleSelective" parameterType="map">
+        update news
+        <set>
+            <if test="record.nid != null">
+                nid = #{record.nid,jdbcType=INTEGER},
+            </if>
+            <if test="record.ntid != null">
+                ntid = #{record.ntid,jdbcType=INTEGER},
+            </if>
+            <if test="record.ntitle != null">
+                ntitle = #{record.ntitle,jdbcType=VARCHAR},
+            </if>
+            <if test="record.nauthor != null">
+                nauthor = #{record.nauthor,jdbcType=VARCHAR},
+            </if>
+            <if test="record.ncreatedate != null">
+                ncreateDate = #{record.ncreatedate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.npicpath != null">
+                npicPath = #{record.npicpath,jdbcType=VARCHAR},
+            </if>
+            <if test="record.nmodifydate != null">
+                nmodifyDate = #{record.nmodifydate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="record.nsummary != null">
+                nsummary = #{record.nsummary,jdbcType=VARCHAR},
+            </if>
+            <if test="record.ncontent != null">
+                ncontent = #{record.ncontent,jdbcType=LONGVARCHAR},
+            </if>
+        </set>
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByExampleWithBLOBs" parameterType="map">
+        update news
+        set nid = #{record.nid,jdbcType=INTEGER},
+        ntid = #{record.ntid,jdbcType=INTEGER},
+        ntitle = #{record.ntitle,jdbcType=VARCHAR},
+        nauthor = #{record.nauthor,jdbcType=VARCHAR},
+        ncreateDate = #{record.ncreatedate,jdbcType=TIMESTAMP},
+        npicPath = #{record.npicpath,jdbcType=VARCHAR},
+        nmodifyDate = #{record.nmodifydate,jdbcType=TIMESTAMP},
+        nsummary = #{record.nsummary,jdbcType=VARCHAR},
+        ncontent = #{record.ncontent,jdbcType=LONGVARCHAR}
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByExample" parameterType="map">
+        update news
+        set nid = #{record.nid,jdbcType=INTEGER},
+        ntid = #{record.ntid,jdbcType=INTEGER},
+        ntitle = #{record.ntitle,jdbcType=VARCHAR},
+        nauthor = #{record.nauthor,jdbcType=VARCHAR},
+        ncreateDate = #{record.ncreatedate,jdbcType=TIMESTAMP},
+        npicPath = #{record.npicpath,jdbcType=VARCHAR},
+        nmodifyDate = #{record.nmodifydate,jdbcType=TIMESTAMP},
+        nsummary = #{record.nsummary,jdbcType=VARCHAR}
+        <if test="_parameter != null">
+            <include refid="Update_By_Example_Where_Clause"/>
+        </if>
+    </update>
+    <update id="updateByPrimaryKeySelective" parameterType="com.tt.news.pojo.News">
+        update news
+        <set>
+            <if test="ntid != null">
+                ntid = #{ntid,jdbcType=INTEGER},
+            </if>
+            <if test="ntitle != null">
+                ntitle = #{ntitle,jdbcType=VARCHAR},
+            </if>
+            <if test="nauthor != null">
+                nauthor = #{nauthor,jdbcType=VARCHAR},
+            </if>
+            <if test="ncreatedate != null">
+                ncreateDate = #{ncreatedate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="npicpath != null">
+                npicPath = #{npicpath,jdbcType=VARCHAR},
+            </if>
+            <if test="nmodifydate != null">
+                nmodifyDate = #{nmodifydate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="nsummary != null">
+                nsummary = #{nsummary,jdbcType=VARCHAR},
+            </if>
+            <if test="ncontent != null">
+                ncontent = #{ncontent,jdbcType=LONGVARCHAR},
+            </if>
+        </set>
+        where nid = #{nid,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.tt.news.pojo.News">
+    update news
+    set ntid = #{ntid,jdbcType=INTEGER},
+      ntitle = #{ntitle,jdbcType=VARCHAR},
+      nauthor = #{nauthor,jdbcType=VARCHAR},
+      ncreateDate = #{ncreatedate,jdbcType=TIMESTAMP},
+      npicPath = #{npicpath,jdbcType=VARCHAR},
+      nmodifyDate = #{nmodifydate,jdbcType=TIMESTAMP},
+      nsummary = #{nsummary,jdbcType=VARCHAR},
+      ncontent = #{ncontent,jdbcType=LONGVARCHAR}
+    where nid = #{nid,jdbcType=INTEGER}
+  </update>
+    <update id="updateByPrimaryKey" parameterType="com.tt.news.pojo.News">
+    update news
+    set ntid = #{ntid,jdbcType=INTEGER},
+      ntitle = #{ntitle,jdbcType=VARCHAR},
+      nauthor = #{nauthor,jdbcType=VARCHAR},
+      ncreateDate = #{ncreatedate,jdbcType=TIMESTAMP},
+      npicPath = #{npicpath,jdbcType=VARCHAR},
+      nmodifyDate = #{nmodifydate,jdbcType=TIMESTAMP},
+      nsummary = #{nsummary,jdbcType=VARCHAR}
+    where nid = #{nid,jdbcType=INTEGER}
+  </update>
+</mapper>

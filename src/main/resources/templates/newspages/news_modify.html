@@ -1,0 +1,141 @@
+﻿<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>添加主题--管理后台</title>
+    <link th:href="@{/static/css/admin.css}" rel="stylesheet" type="text/css"/>
+</head>
+<script type="text/javascript">
+    function check() {
+        var ntitle = document.getElementById("ntitle");
+        var nauthor = document.getElementById("nauthor");
+        var nsummary = document.getElementById("nsummary");
+        var ncontent = document.getElementById("ncontent");
+
+        if (ntitle.value == "") {
+            alert("标题不能为空！！");
+            ntitle.focus();
+            return false;
+        } else if (nauthor.value == "") {
+            alert("作者不能为空！！");
+            nauthor.focus();
+            return false;
+        } else if (nsummary.value == "") {
+            alert("摘要不能为空！！");
+            nsummary.focus();
+            return false;
+        } else if (ncontent.value == "") {
+            alert("内容不能为空！！");
+            ncontent.focus();
+            return false;
+        }
+        return true;
+    }
+</script>
+
+<div id="main">
+    <!--<%@include file="console_element/left.html" %>-->
+    <div id="opt_list">
+        <ul>
+            <li><a href="../util/news?opr=toAddNews">添加新闻</a></li>
+            <li><a href="../util/news?opr=list">编辑新闻</a></li>
+            <li><a href="topic_add.html">添加主题</a></li>
+            <li><a href="../util/topics?opr=list">编辑主题</a></li>
+        </ul>
+    </div>
+    <div id="opt_area">
+        <h1 id="opt_type"> 编辑新闻： </h1>
+        <form action="../util/news?opr=modifyNews&nid=${news.nid}"
+              method="post" enctype="multipart/form-data" onsubmit="return check()">
+            <p>
+                <label> 主题 </label>
+                <select name="ntid">
+                    <!--<c:forEach items="${requestScope.topics}" var="topic">
+                        <c:choose>
+                            <c:when test="${news.ntid == topic.tid}">
+                                <option value='${topic.tid}' selected="selected">${topic.tname}</option>
+                            </c:when>
+                            <c:otherwise>
+                                <option value='${topic.tid}'>${topic.tname}</option>
+                            </c:otherwise>
+                        </c:choose>
+                    </c:forEach>-->
+                </select>
+            </p>
+            <p>
+                <label> 标题 </label>
+                <input name="ntitle" id="ntitle" type="text" class="opt_input" value="${news.ntitle}"/>
+            </p>
+            <p>
+                <label> 作者 </label>
+                <input name="nauthor" id="nauthor" type="text" class="opt_input" value="${news.nauthor}"/>
+            </p>
+            <p>
+                <label> 摘要 </label>
+                <textarea name="nsummary" id="nsummary" cols="40" rows="3">${news.nsummary}</textarea>
+            </p>
+            <p>
+                <label> 内容 </label>
+                <textarea name="ncontent" id="ncontent" cols="70" rows="10">${news.ncontent}</textarea>
+            </p>
+            <p>
+                <label> 上传图片 </label>
+                <input name="file" id="file" type="file" class="opt_input"/>
+            </p>
+            <input type="submit" value="提交" class="opt_sub"/>
+            <input type="reset" value="重置" class="opt_sub"/>
+        </form>
+        <h1 id="opt_type">
+            修改新闻评论：
+        </h1>
+        <table width="80%" align="left">
+            <!--<c:choose>
+                <c:when test="${empty news.comments}">
+                    <tr>
+                        <td colspan="6"> 暂无评论！</td>
+                    </tr>
+                    <tr>
+                        <td colspan="6">
+                            <hr/>
+                        </td>
+                    </tr>
+                </c:when>
+                <c:otherwise>
+                    <c:forEach items="${news.comments}" var="comment">
+                        <tr>
+                            <td> 留言人：</td>
+                            <td>${comment.cauthor}</td>
+                            <td> IP：</td>
+                            <td>${comment.cip}</td>
+                            <td> 留言时间：</td>
+                            <td>
+                                <fmt:formatDate value="${comment.cdate}" pattern="yyyy-MM-dd HH:mm:ss"/>
+                            </td>
+                            <td><a href="../util/news?opr=deleteComment&cid=${comment.cid}&nid=${news.nid}">删除</a></td>
+                        </tr>
+                        <tr>
+                            <td colspan="6">${comment.ccontent}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="6">
+                                <hr/>
+                            </td>
+                        </tr>
+                    </c:forEach>
+                </c:otherwise>
+            </c:choose>-->
+        </table>
+    </div>
+</div>
+<div id="site_link"><a href="#">关于我们</a><span>|</span> <a href="#">Aboue Us</a><span>|</span> <a
+        href="#">联系我们</a><span>|</span> <a href="#">广告服务</a><span>|</span> <a href="#">供稿服务</a><span>|</span> <a
+        href="#">法律声明</a><span>|</span> <a href="#">招聘信息</a><span>|</span> <a href="#">网站地图</a><span>|</span> <a
+        href="#">留言反馈</a></div>
+<div>
+    <p class="">24小时客户服务热线：010-68988888 &#160;&#160;&#160;&#160; <a href="#">常见问题解答</a> &#160;&#160;&#160;&#160;
+        新闻热线：010-627488888<br/>
+        文明办网文明上网举报电话：010-627488888 &#160;&#160;&#160;&#160; 举报邮箱：<a href="#">jubao@jb-aptech.com.cn</a></p>
+    <p class="copyright">Copyright &copy; 1999-2009 News China gov, All Right Reserver<br/>
+        新闻中国 版权所有</p>
+</div>
+</html>
